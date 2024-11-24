@@ -96,9 +96,16 @@ async def search():
 
     with ThreadPoolExecutor() as executor:
         loop = asyncio.get_event_loop()
-        results = await loop.run_in_executor(executor, lambda: list(map(lambda doc: parallel_search(query, doc, field), documents)))
+        all_results = await loop.run_in_executor(executor, lambda: list(map(lambda doc: parallel_search(query, doc, field), documents)))
 
-    sorted_results = sorted(results, key=lambda x: x['similarity'], reverse=(False if sort == 'relevance_asc' else True))
+    threshold = 0.1
+    filtered_results = [result for result in all_results if result['similarity'] > threshold]
+
+    sorted_results = sorted(
+        filtered_results,
+        key=lambda x: x['similarity'],
+        reverse=(False if sort == 'relevance_asc' else True)
+    )
 
     # Paginate results
     total_results = len(sorted_results)
