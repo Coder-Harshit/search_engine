@@ -83,9 +83,10 @@ def parallel_search(query, doc, field):
         'snippet': doc.get('content', '')[:200] + '...',
         'similarity': similarity
     }
-# @app.route("/")
-# async def home():
-#     return "Welcome to the search engine API! Use the /search endpoint to search for documents."
+
+@app.route("/")
+async def home():
+    return "Welcome to the search engine API! Use the /search endpoint to search for documents."
 
 @app.route("/search", methods=["GET"])
 async def search():
