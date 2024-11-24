@@ -14,7 +14,14 @@ import { cn } from "@/lib/utils"
 
 export default function Home() {
   const [query, setQuery] = useState("")
-  const [results, setResults] = useState<Array<any>>([])
+  interface SearchResult {
+    id: string;
+    title: string;
+    snippet: string;
+    similarity: number;
+  }
+
+  const [results, setResults] = useState<Array<SearchResult>>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [sort, setSort] = useState("relevance_desc")
