@@ -75,13 +75,15 @@ async def crawl_and_populate_db():
     for url in urls_to_crawl:
         html = await fetch_page(url)
         document = await parse_page(html)
-        crawled_documents.append(document)
-        print("Crawled:", document["title"])
+        # Check if the document already exists in the collection
+        existing_document = await collection.find_one({"title": document["title"]})
+        if not existing_document:
+            await collection.insert_one(document)
+            print("Inserted:", document["title"])
+        else:
+            print("Skipped (already exists):", document["title"])
 
-    # Insert sample and crawled documents into the database
-    # await collection.insert_many(sample_documents + crawled_documents)
-    await collection.insert_many(crawled_documents)
-    print("Documents inserted successfully!")
+    print("Crawling and appending completed!")
 
 if __name__ == "__main__":
     asyncio.run(crawl_and_populate_db())
