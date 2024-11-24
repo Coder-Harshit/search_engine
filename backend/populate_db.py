@@ -3,6 +3,14 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 import re
+from dotenv import load_dotenv
+from pymongo.server_api import ServerApi
+import os
+
+load_dotenv(dotenv_path='.env.local')
+DB_USER = os.getenv('DB_USER')
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+uri = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@cluster0.ncedv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 
 async def fetch_page(url):
     async with aiohttp.ClientSession() as session:
@@ -27,7 +35,8 @@ def format_text(text):
     return text
 
 async def crawl_and_populate_db():
-    client = AsyncIOMotorClient("mongodb://localhost:27017")
+    # client = AsyncIOMotorClient("mongodb://localhost:27017")
+    client = AsyncIOMotorClient(uri, serverApi=ServerApi('1'))
     db = client.search_engine
     collection = db.documents
 

@@ -8,7 +8,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from concurrent.futures import ThreadPoolExecutor
 import nltk
 from dotenv import load_dotenv
+from pymongo.server_api import ServerApi
 import os
+
 load_dotenv(dotenv_path='.env.local')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
@@ -21,7 +23,8 @@ nltk.download('stopwords')
 app = Quart(__name__)
 uri = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@cluster0.ncedv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 # MongoDB connection
-client = AsyncIOMotorClient("mongodb://localhost:27017")
+# client = AsyncIOMotorClient("mongodb://localhost:27017")
+client = AsyncIOMotorClient(uri, serverApi=ServerApi('1'))
 db = client.search_engine
 collection = db.documents
 
