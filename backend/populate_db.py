@@ -36,7 +36,7 @@ def format_text(text):
 
 async def crawl_and_populate_db():
     # client = AsyncIOMotorClient("mongodb://localhost:27017")
-    client = AsyncIOMotorClient(uri, serverApi=ServerApi('1'))
+    client = AsyncIOMotorClient(uri, server_api=ServerApi('1'))
     db = client.search_engine
     collection = db.documents
 

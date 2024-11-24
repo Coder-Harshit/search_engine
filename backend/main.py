@@ -24,7 +24,7 @@ app = Quart(__name__)
 uri = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@cluster0.ncedv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 # MongoDB connection
 # client = AsyncIOMotorClient("mongodb://localhost:27017")
-client = AsyncIOMotorClient(uri, serverApi=ServerApi('1'))
+client = AsyncIOMotorClient(uri, server_api=ServerApi('1'))
 db = client.search_engine
 collection = db.documents
 
