@@ -13,7 +13,9 @@ export async function GET(request: Request) {
   }
 
   const backendUrl = process.env.BACKEND_URL || 'https://search-engine-1nfx.onrender.com'
+  console.log(backendUrl)
   const searchUrl = `${backendUrl}/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${page}&field=${searchField}&threshold=${threshold}`
+  console.log(searchUrl)
 
   try {
     const response = await fetch(searchUrl)
