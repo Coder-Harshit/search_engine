@@ -12,13 +12,16 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 })
   }
 
+  const backendUrl = process.env.BACKEND_URL || 'https://search-engine-1nfx.onrender.com'
+  const searchUrl = `${backendUrl}/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${page}&field=${searchField}&threshold=${threshold}`
+
   try {
-    const response = await fetch(`https://search-engine-1nfx.onrender.com/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${page}&field=${searchField}&threshold=${threshold}`)
-    
+    const response = await fetch(searchUrl)
+
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
-    
+
     const data = await response.json()
     console.log(data)
     return NextResponse.json(data)
@@ -27,4 +30,3 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Error fetching search results. Please ensure the backend server is running.' }, { status: 500 })
   }
 }
-
