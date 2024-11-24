@@ -24,7 +24,9 @@ export async function GET(request: Request) {
         'Content-Type': 'application/json',
       },
     })
+    console.log("HEHEHEH")
     console.log(response)
+    console.log("HAHAHAAHA")
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
