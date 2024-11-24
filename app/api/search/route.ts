@@ -13,7 +13,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const response = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${page}&field=${searchField}&threshold=${threshold}`)
+    const response = await fetch(`https://search-engine-1nfx.onrender.com/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${page}&field=${searchField}&threshold=${threshold}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
