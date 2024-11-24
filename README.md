@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Big Data Search Engine
 
-## Getting Started
+A scalable search engine built with Next.js, Python (Quart), and MongoDB for handling and querying large datasets efficiently.
 
-First, run the development server:
+## 🌐 Live Demo
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- Frontend: [https://search-engine-six-green.vercel.app/](https://search-engine-six-green.vercel.app/)
+- Backend API: [https://search-engine-1nfx.onrender.com](https://search-engine-1nfx.onrender.com)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎯 Project Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project was developed as part of the Data Structures and Algorithms for Big Data course at Jaypee Institute of Information Technology. It demonstrates the practical application of advanced data structures and algorithms in handling large-scale data processing and retrieval.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Key Features
 
-## Learn More
+- 🔍 Efficient text-based searching
+- 📊 TF-IDF based relevance scoring
+- ⚡ Async processing for improved performance
+- 🎨 Clean, modern UI with dark mode support
+- 📱 Responsive design for all devices
 
-To learn more about Next.js, take a look at the following resources:
+## 🛠️ Technology Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Frontend
+- Next.js
+- React
+- Tailwind CSS
+- shadcn/ui components
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Backend
+- Python (Quart Framework)
+- NLTK for text processing
+- Motor for async MongoDB operations
+- TF-IDF vectorization
 
-## Deploy on Vercel
+### Database
+- MongoDB with text indexing
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🚀 Getting Started
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/coder-Harshit/search_engine.git
+   cd search_engine
+   ```
+
+2. Install frontend dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Install backend dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Set up environment variables:
+   Create `.env` files in both frontend and backend directories with the necessary configurations.
+
+5. Run the development servers:
+   
+   Frontend:
+   ```bash
+   npm run dev
+   ```
+
+   Backend:
+   ```bash
+   hypercorn backend/main:app
+   ```
+
+## 📚 Course Context
+
+This project is part of the Data Structures & Algorithms for Big Data (17M11CS111) course at JIIT, which covers:
+
+- Big Data characteristics and applications
+- Parallel algorithms and data structures
+- Indexing strategies and Big Data databases
+- MapReduce programming model
+- Hashing and membership algorithms
+- Cardinality and frequency estimation
+
+## 👥 Team Members
+
+- Madhura Jituri (21803004)
+- Anmol Verma (21803014)
+- Harshit Vijay (21803015)
+- Rohit Gupta (21803018)
+- Vibhav Baba (21803027)
+
+## 🎓 Academic Context
+
+- **Course**: Data Structures & Algorithms for Big Data
+- **Course Code**: 17M11CS111
+- **Institution**: Jaypee Institute of Information Technology
+- **Instructor**: Dr. Shikha Jain
+
+## 📄 License
+
+This project is academic work and is subject to university guidelines.
+
+## 🙏 Acknowledgments
+
+Special thanks to Dr. Shikha Jain for her guidance and support throughout the development of this project.
