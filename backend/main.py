@@ -79,6 +79,7 @@ async def search():
     page = int(request.args.get("page", 1))
     page_size = int(request.args.get("page_size", 10))
     field = request.args.get("field", "both").lower()
+    threshold = float(request.args.get("threshold", 0.1))
 
     if not query or len(query) < 1:
         return jsonify({"error": "Query parameter `q` is required and must be at least 1 character long."}), 400
@@ -98,7 +99,6 @@ async def search():
         loop = asyncio.get_event_loop()
         all_results = await loop.run_in_executor(executor, lambda: list(map(lambda doc: parallel_search(query, doc, field), documents)))
 
-    threshold = 0.1
     filtered_results = [result for result in all_results if result['similarity'] > threshold]
 
     sorted_results = sorted(

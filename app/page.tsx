@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Pagination } from "@/components/ui/pagination"
+import { Slider } from '@/components/ui/slider'
 
 export default function Home() {
   const [query, setQuery] = useState('')
@@ -17,13 +18,14 @@ export default function Home() {
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [searchField, setSearchField] = useState('both')
+  const [threshold, setThreshold] = useState<number[]>([0.1]);
 
   const handleSearch = async (newPage?: number) => {
     setLoading(true)
     setError(null)
     const searchPage = newPage || page
     try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${searchPage}&field=${searchField}`)
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${searchPage}&field=${searchField}&threshold=${threshold[0]}`)
       const data = await response.json()
       if (data.error) {
         throw new Error(data.error)
@@ -59,6 +61,7 @@ export default function Home() {
             </Button>
           </div>
           <div className="flex justify-between items-center mb-4">
+            
             <Select value={sort} onValueChange={(value) => setSort(value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Sort by" />
@@ -70,6 +73,20 @@ export default function Home() {
                 <SelectItem value="date_asc">Date (Oldest First)</SelectItem>
               </SelectContent>
             </Select>
+            
+            <label htmlFor="threshold" className="block text-sm font-medium text-gray-700">
+              Threshold: {threshold[0].toFixed(2)}
+            </label>
+            <Slider
+              value={threshold}
+              onValueChange={(value) => setThreshold(value)}
+              min={0}
+              max={1}
+              step={0.01}
+              id="threshold"
+              className="mt-2"
+            />
+            
             <Select value={searchField} onValueChange={setSearchField}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Search in" />
@@ -80,6 +97,7 @@ export default function Home() {
                 <SelectItem value="both">Both Title and Description</SelectItem>
               </SelectContent>
             </Select>
+          
           </div>
           {error && (
             <Alert variant="destructive" className="mt-4">
