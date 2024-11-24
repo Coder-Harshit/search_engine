@@ -37,6 +37,7 @@ export async function GET(request: Request) {
       data = JSON.parse(text)
     } catch (parseError) {
       console.error('Failed to parse JSON:', text)
+      console.log(parseError)
       throw new Error('Invalid JSON response from server')
     }
 
