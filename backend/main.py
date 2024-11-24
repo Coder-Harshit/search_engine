@@ -10,6 +10,8 @@ import nltk
 from dotenv import load_dotenv
 from pymongo.server_api import ServerApi
 import os
+import hypercorn.asyncio
+import hypercorn.config
 
 load_dotenv(dotenv_path='.env.local')
 DB_USER = os.getenv('DB_USER')
@@ -136,3 +138,8 @@ async def search():
 async def startup():
     """Run initialization before the app starts serving requests."""
     await initialize_app()
+
+if __name__=='__main__':
+    config = hypercorn.config.Config()
+    config.bind = ["0.0.0.0:{}".format(os.environ.get('PORT', 8000))]
+    hypercorn.asyncio.serve(app, config)
