@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
   try {
     const response = await fetch(searchUrl)
-
+    console.log(response)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
