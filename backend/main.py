@@ -19,6 +19,7 @@ DB_PASSWORD = os.getenv('DB_PASSWORD')
 
 # Initialize NLTK data
 nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('stopwords')
 
 # Initialize Flask app
