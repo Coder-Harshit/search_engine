@@ -5,13 +5,14 @@ export async function GET(request: Request) {
   const query = searchParams.get('q')
   const sort = searchParams.get('sort') || 'relevance_desc'
   const page = searchParams.get('page') || '1'
+  const searchField = searchParams.get('field') || 'both'
 
   if (!query) {
     return NextResponse.json({ error: 'Query parameter is required' }, { status: 400 })
   }
 
   try {
-    const response = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${page}`)
+    const response = await fetch(`http://localhost:8000/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${page}&field=${searchField}`)
     
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)

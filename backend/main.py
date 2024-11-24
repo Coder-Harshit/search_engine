@@ -40,8 +40,8 @@ async def fit_vectorizer():
 
 # Create text index
 async def create_text_index():
-    """Create a text index on the content field."""
-    await collection.create_index([("content", "text")])
+    """Create a text index on the content and title fields."""
+    await collection.create_index([("content", "text"), ("title", "text")])
 
 async def initialize_app():
     """Initialize text index and fit vectorizer before app starts."""
@@ -49,9 +49,15 @@ async def initialize_app():
     await fit_vectorizer()
 
 # Parallel search function
-def parallel_search(query, doc):
+def parallel_search(query, doc, field):
     preprocessed_query = preprocess_text(query)
-    preprocessed_doc = preprocess_text(doc['content'])
+    
+    if field == "content":
+        preprocessed_doc = preprocess_text(doc.get('content', ''))
+    elif field == "title":
+        preprocessed_doc = preprocess_text(doc.get('title', ''))
+    else:  # both
+        preprocessed_doc = preprocess_text(doc.get('content', '') + " " + doc.get('title', ''))
 
     # Calculate TF-IDF similarity
     query_vector = vectorizer.transform([' '.join(preprocessed_query)])
@@ -60,8 +66,8 @@ def parallel_search(query, doc):
 
     return {
         'id': str(doc['_id']),
-        'title': doc['title'],
-        'snippet': doc['content'][:200] + '...',
+        'title': doc.get('title', ''),
+        'snippet': doc.get('content', '')[:200] + '...',
         'similarity': similarity
     }
 
@@ -72,16 +78,25 @@ async def search():
     sort = request.args.get("sort", "relevance_desc")
     page = int(request.args.get("page", 1))
     page_size = int(request.args.get("page_size", 10))
+    field = request.args.get("field", "both").lower()
 
     if not query or len(query) < 1:
         return jsonify({"error": "Query parameter `q` is required and must be at least 1 character long."}), 400
 
-    cursor = collection.find({"$text": {"$search": query}})
+    # MongoDB query based on the field
+    if field == "content":
+        mongo_query = {"$text": {"$search": query}, "content": {"$exists": True}}
+    elif field == "title":
+        mongo_query = {"$text": {"$search": query}, "title": {"$exists": True}}
+    else:  # both
+        mongo_query = {"$text": {"$search": query}}
+
+    cursor = collection.find(mongo_query)
     documents = await cursor.to_list(length=100)
 
     with ThreadPoolExecutor() as executor:
         loop = asyncio.get_event_loop()
-        results = await loop.run_in_executor(executor, lambda: list(map(lambda doc: parallel_search(query, doc), documents)))
+        results = await loop.run_in_executor(executor, lambda: list(map(lambda doc: parallel_search(query, doc, field), documents)))
 
     sorted_results = sorted(results, key=lambda x: x['similarity'], reverse=(False if sort == 'relevance_asc' else True))
 

@@ -16,13 +16,14 @@ export default function Home() {
   const [sort, setSort] = useState('relevance_desc')
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [searchField, setSearchField] = useState('both')
 
   const handleSearch = async (newPage?: number) => {
     setLoading(true)
     setError(null)
     const searchPage = newPage || page
     try {
-      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${searchPage}`)
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}&sort=${sort}&page=${searchPage}&field=${searchField}`)
       const data = await response.json()
       if (data.error) {
         throw new Error(data.error)
@@ -67,6 +68,16 @@ export default function Home() {
                 <SelectItem value="relevance_asc">Relevance (Low to High)</SelectItem>
                 <SelectItem value="date_desc">Date (Newest First)</SelectItem>
                 <SelectItem value="date_asc">Date (Oldest First)</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={searchField} onValueChange={setSearchField}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Search in" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="title">Title Only</SelectItem>
+                <SelectItem value="content">Description Only</SelectItem>
+                <SelectItem value="both">Both Title and Description</SelectItem>
               </SelectContent>
             </Select>
           </div>
