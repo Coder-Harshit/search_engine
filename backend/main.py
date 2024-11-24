@@ -130,9 +130,9 @@ async def search():
     paginated_results = sorted_results[start_index:end_index]
 
     return jsonify({
+        'current_page': page,
         'results': paginated_results,
-        'total_pages': (total_results + page_size - 1) // page_size,
-        'current_page': page
+        'total_pages': (total_results + page_size - 1) // page_size
     })
 
 @app.before_serving
