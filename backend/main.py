@@ -20,13 +20,15 @@ nltk.download('punkt')
 nltk.download('stopwords')
 
 # Initialize Flask app
-app = Quart(__name__)
 uri = f"mongodb+srv://{DB_USER}:{DB_PASSWORD}@cluster0.ncedv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 # MongoDB connection
 # client = AsyncIOMotorClient("mongodb://localhost:27017")
 client = AsyncIOMotorClient(uri, server_api=ServerApi('1'))
 db = client.search_engine
 collection = db.documents
+print("Connection to MongoDB successful!...")
+
+app = Quart(__name__)
 
 # Preprocess text
 stop_words = set(stopwords.words('english'))
@@ -78,6 +80,9 @@ def parallel_search(query, doc, field):
         'snippet': doc.get('content', '')[:200] + '...',
         'similarity': similarity
     }
+@app.route("/")
+async def home():
+    return "Welcome to the search engine API! Use the /search endpoint to search for documents."
 
 @app.route("/search", methods=["GET"])
 async def search():

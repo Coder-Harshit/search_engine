@@ -34,36 +34,24 @@ def format_text(text):
     # Additional formatting can be added here if needed
     return text
 
-async def crawl_and_populate_db():
-    # client = AsyncIOMotorClient("mongodb://localhost:27017")
+async def connect_to_db():
     client = AsyncIOMotorClient(uri, server_api=ServerApi('1'))
+    try:
+        await client.admin.command('ping')
+        print("Pinged your deployment. You successfully connected to MongoDB!")
+        return client
+    except Exception as e:
+        print(f"Failed to connect to MongoDB: {e}")
+        return None
+
+async def crawl_and_populate_db(client):
+    if client is None:
+        print("No database connection. Exiting.")
+        return
+
     db = client.search_engine
     collection = db.documents
 
-    # sample_documents = [
-    #     {
-    #         "title": "Introduction to Big Data",
-    #         "content": "Big Data refers to extremely large datasets that may be analyzed computationally to reveal patterns, trends, and associations. It is characterized by the three Vs: Volume, Velocity, and Variety."
-    #     },
-    #     {
-    #         "title": "Data Structures for Big Data",
-    #         "content": "Efficient data structures are crucial for handling Big Data. Some commonly used structures include B-trees, LSM trees, and Bloom filters. These structures help in indexing and quick retrieval of data."
-    #     },
-    #     {
-    #         "title": "Parallel Algorithms in Big Data",
-    #         "content": "Parallel algorithms are essential in Big Data processing. Examples include parallel sorting algorithms like parallel merge sort and parallel quicksort, as well as parallel matrix algorithms for large-scale computations."
-    #     },
-    #     {
-    #         "title": "MapReduce Framework",
-    #         "content": "MapReduce is a programming model for processing and generating big data sets. It consists of a Map() function that performs filtering and sorting, and a Reduce() function that performs a summary operation."
-    #     },
-    #     {
-    #         "title": "MongoDB for Big Data",
-    #         "content": "MongoDB is a popular NoSQL database used in Big Data applications. It provides high performance, high availability, and easy scalability. Its document-based structure allows for flexible and schema-less data models."
-    #     }
-    # ]
-
-    # URLs to crawl
     urls_to_crawl = [
         "https://en.wikipedia.org/wiki/Jaypee_Institute_of_Information_Technology",
         "https://wiki.archlinux.org/title/Installation_guide",
@@ -79,20 +67,25 @@ async def crawl_and_populate_db():
         "https://en.wikipedia.org/wiki/Big_data"
     ]
 
-    # Fetch and parse pages
-    crawled_documents = []
     for url in urls_to_crawl:
-        html = await fetch_page(url)
-        document = await parse_page(html)
-        # Check if the document already exists in the collection
-        existing_document = await collection.find_one({"title": document["title"]})
-        if not existing_document:
-            await collection.insert_one(document)
-            print("Inserted:", document["title"])
-        else:
-            print("Skipped (already exists):", document["title"])
+        try:
+            html = await fetch_page(url)
+            document = await parse_page(html)
+            # Check if the document already exists in the collection
+            existing_document = await collection.find_one({"title": document["title"]})
+            if not existing_document:
+                await collection.insert_one(document)
+                print("Inserted:", document["title"])
+            else:
+                print("Skipped (already exists):", document["title"])
+        except Exception as e:
+            print(f"Error processing {url}: {e}")
 
     print("Crawling and appending completed!")
 
+async def main():
+    client = await connect_to_db()
+    await crawl_and_populate_db(client)
+
 if __name__ == "__main__":
-    asyncio.run(crawl_and_populate_db())
+    asyncio.run(main())
